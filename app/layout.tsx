@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { readdirSync } from 'fs';
 import { join } from 'path';
 import './globals.css';
+import BackgroundProvider from '@/components/BackgroundProvider';
 
 export const metadata: Metadata = {
   title: '嘉然今天吃什么',
@@ -9,23 +10,22 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  let bgImage = '/background.jpg'; // fallback
+  const bgImages: string[] = [];
+  const fallback = '/background.jpg';
 
   try {
     const bgDir = join(process.cwd(), 'public', 'backgrounds');
     const files = readdirSync(bgDir).filter((f) => /\.(jpg|jpeg|png|webp|avif)$/i.test(f));
-    if (files.length > 0) {
-      const randomFile = files[Math.floor(Math.random() * files.length)];
-      bgImage = `/backgrounds/${randomFile}`;
-    }
+    bgImages.push(...files.map((f) => `/backgrounds/${f}`));
   } catch {
-    // fallback to default
+    // empty list, fallback will be used
   }
 
   return (
     <html lang="zh-CN">
-      <body className="min-h-screen" style={{ '--bg-image': `url('${bgImage}')` } as React.CSSProperties}>
+      <body className="min-h-screen" style={{ '--bg-image': `url('${fallback}')` } as React.CSSProperties}>
         {children}
+        <BackgroundProvider images={bgImages} fallback={fallback} />
       </body>
     </html>
   );
