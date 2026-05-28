@@ -13,6 +13,8 @@ export const MEAL_OPTIONS: { value: Meal; label: string; emoji: string }[] = [
 export type Taste = 'sweet' | 'salty' | 'spicy' | 'light' | 'heavy';
 export type Budget = 'premium' | 'value';
 export type Cuisine = 'chinese' | 'western' | 'japanese' | 'southeast_asian';
+export type ChineseCuisine = 'lu' | 'chuan' | 'yue' | 'su' | 'zhe' | 'min' | 'xiang' | 'hui' | 'dongbei' | 'shanghai' | 'jiangxi' | 'hubei' | 'henan' | 'xibei';
+export type DietaryRestriction = 'no_seafood' | 'no_shellfish' | 'no_cilantro';
 
 export const TASTE_OPTIONS: { value: Taste; label: string; emoji: string }[] = [
   { value: 'sweet', label: '甜', emoji: '🍬' },
@@ -32,6 +34,29 @@ export const CUISINE_OPTIONS: { value: Cuisine; label: string; emoji: string }[]
   { value: 'western', label: '西餐', emoji: '🍝' },
   { value: 'japanese', label: '日料', emoji: '🍣' },
   { value: 'southeast_asian', label: '东南亚', emoji: '🍜' },
+];
+
+export const CHINESE_CUISINE_OPTIONS: { value: ChineseCuisine; label: string; emoji: string }[] = [
+  { value: 'lu', label: '鲁菜', emoji: '🥘' },
+  { value: 'chuan', label: '川菜', emoji: '🌶️' },
+  { value: 'yue', label: '粤菜', emoji: '🥟' },
+  { value: 'su', label: '苏菜', emoji: '🐟' },
+  { value: 'zhe', label: '浙菜', emoji: '🦐' },
+  { value: 'min', label: '闽菜', emoji: '🍲' },
+  { value: 'xiang', label: '湘菜', emoji: '🔥' },
+  { value: 'hui', label: '徽菜', emoji: '🍄' },
+  { value: 'dongbei', label: '东北菜', emoji: '🥩' },
+  { value: 'shanghai', label: '上海菜', emoji: '🦀' },
+  { value: 'jiangxi', label: '江西菜', emoji: '🍚' },
+  { value: 'hubei', label: '湖北菜', emoji: '🐌' },
+  { value: 'henan', label: '河南菜', emoji: '🍜' },
+  { value: 'xibei', label: '西北菜', emoji: '🐑' },
+];
+
+export const DIETARY_OPTIONS: { value: DietaryRestriction; label: string; emoji: string }[] = [
+  { value: 'no_seafood', label: '不吃海鲜', emoji: '🐟' },
+  { value: 'no_shellfish', label: '不吃虾蟹贝壳类', emoji: '🦐' },
+  { value: 'no_cilantro', label: '不吃香菜', emoji: '🌿' },
 ];
 
 // ---- Recommendation ----
@@ -59,7 +84,10 @@ export interface RecommendRequest {
   tastes: Taste[];
   budgets: Budget[];
   cuisines: Cuisine[];
+  chineseCuisines: ChineseCuisine[];
+  dietary: DietaryRestriction[];
   custom: string;
+  rethinkStyle?: Style;
 }
 
 export interface RecommendResponse {

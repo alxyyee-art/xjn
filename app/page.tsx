@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import type { Meal, Taste, Budget, Cuisine, Recommendation, HistoryEntry, ApiError } from '@/lib/types';
+import type { Meal, Taste, Budget, Cuisine, ChineseCuisine, DietaryRestriction, Recommendation, HistoryEntry, ApiError, Style } from '@/lib/types';
 import { addHistory } from '@/lib/storage';
 import Header from '@/components/Header';
 import MealSelector from '@/components/MealSelector';
@@ -26,6 +26,8 @@ export default function HomePage() {
   const [tastes, setTastes] = useState<Taste[]>([]);
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [cuisines, setCuisines] = useState<Cuisine[]>([]);
+  const [chineseCuisines, setChineseCuisines] = useState<ChineseCuisine[]>([]);
+  const [dietary, setDietary] = useState<DietaryRestriction[]>([]);
   const [custom, setCustom] = useState('');
 
   // ---- Page state ----
@@ -45,7 +47,7 @@ export default function HomePage() {
       const res = await fetch('/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ meal, tastes, budgets, cuisines, custom }),
+        body: JSON.stringify({ meal, tastes, budgets, cuisines, chineseCuisines, dietary, custom }),
       });
 
       const data = await res.json();
@@ -60,7 +62,7 @@ export default function HomePage() {
       // Save to history
       const entry: HistoryEntry = {
         id: crypto.randomUUID(),
-        query: { meal, tastes, budgets, cuisines, custom },
+        query: { meal, tastes, budgets, cuisines, chineseCuisines, dietary, custom },
         recommendations: data.recommendations,
         createdAt: new Date().toISOString(),
       };
@@ -71,15 +73,51 @@ export default function HomePage() {
         error: { error: 'UPSTREAM_ERROR', message: '网络连接失败，请检查网络后重试' },
       });
     }
-  }, [meal, tastes, budgets, cuisines, custom]);
+  }, [meal, tastes, budgets, cuisines, chineseCuisines, dietary, custom]);
+
+  // ---- Rethink single card ----
+  const handleRethink = useCallback(async (style: Style) => {
+    if (!meal || pageState.phase !== 'result') return;
+
+    // Keep current recommendations, mark the one being rethought
+    const oldRecs = pageState.recommendations;
+    setPageState({ phase: 'loading' });
+
+    try {
+      const res = await fetch('/api/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ meal, tastes, budgets, cuisines, chineseCuisines, dietary, custom, rethinkStyle: style }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPageState({ phase: 'error', error: data as ApiError });
+        return;
+      }
+
+      // Replace only the rethought card
+      const newRec = data.recommendations[0];
+      const updated = oldRecs.map((r) => r.style === style ? newRec : r);
+      setPageState({ phase: 'result', recommendations: updated });
+    } catch {
+      setPageState({
+        phase: 'error',
+        error: { error: 'UPSTREAM_ERROR', message: '网络连接失败，请检查网络后重试' },
+      });
+    }
+  }, [meal, tastes, budgets, cuisines, chineseCuisines, dietary, custom, pageState]);
 
   // ---- History select ----
   function handleHistorySelect(entry: HistoryEntry) {
     setMeal(entry.query.meal);
-    setTastes(entry.query.tastes);
-    setBudgets(entry.query.budgets);
-    setCuisines(entry.query.cuisines);
-    setCustom(entry.query.custom);
+    setTastes(entry.query.tastes || []);
+    setBudgets(entry.query.budgets || []);
+    setCuisines(entry.query.cuisines || []);
+    setChineseCuisines(entry.query.chineseCuisines || []);
+    setDietary(entry.query.dietary || []);
+    setCustom(entry.query.custom || '');
     setPageState({ phase: 'result', recommendations: entry.recommendations });
   }
 
@@ -105,7 +143,13 @@ export default function HomePage() {
           <PreferencePanel
             tastes={tastes} onTastesChange={setTastes}
             budgets={budgets} onBudgetsChange={setBudgets}
-            cuisines={cuisines} onCuisinesChange={setCuisines}
+            cuisines={cuisines} onCuisinesChange={(c) => {
+              // Auto-clear Chinese sub-cuisines when 中餐 is deselected
+              if (!c.includes('chinese')) setChineseCuisines([]);
+              setCuisines(c);
+            }}
+            chineseCuisines={chineseCuisines} onChineseCuisinesChange={setChineseCuisines}
+            dietary={dietary} onDietaryChange={setDietary}
             custom={custom} onCustomChange={setCustom}
           />
         </section>
@@ -121,7 +165,7 @@ export default function HomePage() {
         {pageState.phase === 'idle' && <EmptyState />}
         {pageState.phase === 'loading' && <LoadingSkeleton />}
         {pageState.phase === 'result' && (
-          <RecommendationList recommendations={pageState.recommendations} />
+          <RecommendationList recommendations={pageState.recommendations} onRethink={handleRethink} />
         )}
         {pageState.phase === 'error' && (
           <ErrorBanner
@@ -135,7 +179,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="text-center py-6 text-xs text-stone-300">
-        Powered by DeepSeek
+        嘉然今天吃什么 · Powered by DeepSeek
       </footer>
 
       {/* Drawers */}

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Recommendation } from '@/lib/types';
+import type { Recommendation, Style } from '@/lib/types';
 import { STYLE_LABELS } from '@/lib/types';
 import StarRating from './StarRating';
 import { useState } from 'react';
@@ -9,15 +9,16 @@ import { addFavorite, removeFavorite, isFavorite } from '@/lib/storage';
 interface RecommendationCardProps {
   recommendation: Recommendation;
   onFavoriteChange?: () => void;
+  onRethink?: (style: Style) => void;
 }
 
-export default function RecommendationCard({ recommendation, onFavoriteChange }: RecommendationCardProps) {
+export default function RecommendationCard({ recommendation, onFavoriteChange, onRethink }: RecommendationCardProps) {
   const { id, style, name, reason, rating, comment } = recommendation;
   const styleInfo = STYLE_LABELS[style];
   const [fav, setFav] = useState(() => isFavorite(id));
 
   function handleCopy() {
-    const text = `【${styleInfo.emoji} ${styleInfo.label}】${name}\n⭐ ${rating}/5\n💡 ${reason}\n💬 ${comment}\n—— AI Eating Lab 推荐`;
+    const text = `【${styleInfo.emoji} ${styleInfo.label}】${name}\n⭐ ${rating}/5\n💡 ${reason}\n💬 ${comment}\n—— 嘉然今天吃什么 推荐`;
     navigator.clipboard.writeText(text).catch(() => {
       prompt('手动复制', text);
     });
@@ -66,6 +67,12 @@ export default function RecommendationCard({ recommendation, onFavoriteChange }:
             ${fav ? 'text-red-500 hover:bg-red-50' : 'text-stone-500 hover:text-red-400 hover:bg-stone-100'}`}
         >
           {fav ? '❤️ 已收藏' : '🤍 收藏'}
+        </button>
+        <button
+          onClick={() => onRethink?.(style)}
+          className="flex-1 py-2 rounded-lg text-sm font-medium text-stone-500 hover:text-amber-600 hover:bg-amber-50 transition-colors"
+        >
+          🔄 不满意
         </button>
       </div>
     </div>
