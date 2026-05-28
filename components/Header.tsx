@@ -10,7 +10,8 @@ export default function Header({ onOpenHistory, onOpenFavorites }: HeaderProps) 
     <header className="sticky top-0 z-30 bg-stone-50/80 backdrop-blur-md border-b border-stone-200/60">
       <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
         <h1 className="text-lg font-bold tracking-tight text-stone-800 flex items-center gap-2">
-          🍽️ 嘉然今天吃什么
+          <img src="/backgrounds/7.jpg" alt="" className="w-7 h-7 rounded-full object-cover border-2 border-amber-300" />
+          嘉然今天吃什么
         </h1>
         <nav className="flex items-center gap-1">
           <button
