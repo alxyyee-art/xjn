@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+
 interface GenerateButtonProps {
   onClick: () => void;
   loading: boolean;
@@ -15,6 +17,14 @@ const LOADING_TEXTS = [
 ];
 
 export default function GenerateButton({ onClick, loading, disabled }: GenerateButtonProps) {
+  const [loadingText, setLoadingText] = useState(LOADING_TEXTS[0]);
+
+  useEffect(() => {
+    if (loading) {
+      setLoadingText(LOADING_TEXTS[Math.floor(Math.random() * LOADING_TEXTS.length)]);
+    }
+  }, [loading]);
+
   return (
     <button
       onClick={onClick}
@@ -31,7 +41,7 @@ export default function GenerateButton({ onClick, loading, disabled }: GenerateB
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          {LOADING_TEXTS[Math.floor(Math.random() * LOADING_TEXTS.length)]}
+          {loadingText}
         </span>
       ) : (
         <span className="inline-flex items-center gap-2">

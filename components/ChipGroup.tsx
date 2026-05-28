@@ -1,19 +1,19 @@
 'use client';
 
-interface ChipOption {
-  value: string;
+interface ChipOption<T extends string = string> {
+  value: T;
   label: string;
   emoji: string;
 }
 
-interface ChipGroupProps {
-  options: ChipOption[];
-  value: string[];
-  onChange: (selected: string[]) => void;
+interface ChipGroupProps<T extends string = string> {
+  options: ChipOption<T>[];
+  value: T[];
+  onChange: (selected: T[]) => void;
 }
 
-export default function ChipGroup({ options, value, onChange }: ChipGroupProps) {
-  function toggle(val: string) {
+export default function ChipGroup<T extends string = string>({ options, value, onChange }: ChipGroupProps<T>) {
+  function toggle(val: T) {
     if (value.includes(val)) {
       onChange(value.filter((v) => v !== val));
     } else {

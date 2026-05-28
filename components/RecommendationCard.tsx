@@ -8,9 +8,10 @@ import { addFavorite, removeFavorite, isFavorite } from '@/lib/storage';
 
 interface RecommendationCardProps {
   recommendation: Recommendation;
+  onFavoriteChange?: () => void;
 }
 
-export default function RecommendationCard({ recommendation }: RecommendationCardProps) {
+export default function RecommendationCard({ recommendation, onFavoriteChange }: RecommendationCardProps) {
   const { id, style, name, reason, rating, comment } = recommendation;
   const styleInfo = STYLE_LABELS[style];
   const [fav, setFav] = useState(() => isFavorite(id));
@@ -30,6 +31,7 @@ export default function RecommendationCard({ recommendation }: RecommendationCar
       addFavorite(recommendation);
       setFav(true);
     }
+    onFavoriteChange?.();
   }
 
   return (

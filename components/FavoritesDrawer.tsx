@@ -35,7 +35,7 @@ export default function FavoritesDrawer({ open, onClose }: FavoritesDrawerProps)
           ) : (
             <div className="p-4 space-y-4">
               {favorites.map((rec) => (
-                <RecommendationCard key={rec.id} recommendation={rec} />
+                <RecommendationCard key={rec.id} recommendation={rec} onFavoriteChange={() => setFavorites(getFavorites())} />
               ))}
             </div>
           )}

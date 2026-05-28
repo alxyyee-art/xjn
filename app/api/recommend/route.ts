@@ -100,8 +100,9 @@ export async function POST(request: NextRequest) {
         { status: 429 }
       );
     }
+    console.error('DeepSeek API error:', msg);
     return NextResponse.json<ApiError>(
-      { error: 'UPSTREAM_ERROR', message: `AI 服务异常：${msg}` },
+      { error: 'UPSTREAM_ERROR', message: 'AI 服务暂时异常，稍后再试' },
       { status: 502 }
     );
   }

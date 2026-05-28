@@ -27,19 +27,19 @@ export default function PreferencePanel({
       {/* 口味 */}
       <div>
         <p className="text-xs font-medium text-stone-400 mb-2 uppercase tracking-wider">口味偏好</p>
-        <ChipGroup options={TASTE_OPTIONS} value={tastes} onChange={onTastesChange as (s: string[]) => void} />
+        <ChipGroup options={TASTE_OPTIONS} value={tastes} onChange={onTastesChange} />
       </div>
 
       {/* 价位 */}
       <div>
         <p className="text-xs font-medium text-stone-400 mb-2 uppercase tracking-wider">价位偏好</p>
-        <ChipGroup options={BUDGET_OPTIONS} value={budgets} onChange={onBudgetsChange as (s: string[]) => void} />
+        <ChipGroup options={BUDGET_OPTIONS} value={budgets} onChange={onBudgetsChange} />
       </div>
 
       {/* 菜系 */}
       <div>
         <p className="text-xs font-medium text-stone-400 mb-2 uppercase tracking-wider">菜系偏好</p>
-        <ChipGroup options={CUISINE_OPTIONS} value={cuisines} onChange={onCuisinesChange as (s: string[]) => void} />
+        <ChipGroup options={CUISINE_OPTIONS} value={cuisines} onChange={onCuisinesChange} />
       </div>
 
       {/* 其他 */}
