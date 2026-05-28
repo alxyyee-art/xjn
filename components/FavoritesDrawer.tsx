@@ -23,7 +23,7 @@ export default function FavoritesDrawer({ open, onClose }: FavoritesDrawerProps)
     <>
       <div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-sm bg-white shadow-2xl flex flex-col">
+      <div className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-sm bg-white shadow-2xl flex flex-col animate-slide-in">
         <div className="flex items-center justify-between px-5 py-4 border-b border-stone-200">
           <h2 className="font-bold text-lg text-stone-800">❤️ 收藏</h2>
           <button onClick={onClose} className="text-xl text-stone-400 hover:text-stone-600 transition-colors">✕</button>
